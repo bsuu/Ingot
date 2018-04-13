@@ -1,172 +1,283 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Hello World!</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css?family=Roboto|Varela+Round');
-    body {
+  <meta charset="utf-8">
+  <title></title>
+  <link href="http://vjs.zencdn.net/6.6.3/video-js.css" rel="stylesheet">
+  <style media="screen">
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans|Varela+Round');
+    .wrapper {
       padding: 0;
       margin: 0;
       overflow: hidden;
     }
 
     .screen {
-      height: calc(100vh * 1);
-      width: 100vw;
       position: absolute;
       top: 0;
       left: 0;
-    }
-
-    .mainScreen {
-      background: #303952;
-      position: relative !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Varela Round', sans-serif;
-      color: #596275;
-    }
-
-    .ytScreen {
+      height: 100%;
+      width: 100%;
       background: red;
-      top: -100vh;
+      transition: top .3s ease-in-out;
     }
 
-    .twScreen {
+    .screen.active {
+      top: 0 !important;
+    }
+
+    .screen.yt {
+      background: black;
+      top: -100%;
+    }
+
+    .screen.tw {
       background: purple;
-      top: -100vh;
+      top: 200%;
     }
 
-    .cover {
+    .yt .controller {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 2;
+    }
+
+    .yt .controller .buttons {
+      position: absolute;
+      top: 91.5%;
+      left: 10%;
+      width: 80%;
+      height: 1%;
+      color: white;
+      font-size: 16px;
+      font-family: 'Varela Round', sans-serif;
+      font-weight: 100;
+    }
+
+    .yt .controller .buttons .timer {
+      position: absolute;
+      left: 0.1%;
+      top: 0;
+    }
+
+    .yt .controller .buttons .quality {
+      position: absolute;
+      right: 0.1%;
+      top: 0;
+      cursor: pointer;
+    }
+
+    .yt .controller .buttons .box {
+      display: none;
+      position: absolute;
+      bottom: 10px;
+      right: 0;
+      /* right: 0.1%; */
+      height: auto;
+      min-width: 20px;
+      border-radius: 5px;
+      box-sizing: border-box;
+      max-width: 80px;
+      padding: 5px 15px;
+      background: rgba(89, 98, 117, .2);
+    }
+
+    .yt .controller .buttons .box span {
+      display: block;
+      cursor: pointer;
+    }
+
+    .yt .controller .buttons .box span:hover {
+    }
+
+    .yt .controller .buttons .mute {
+      position: absolute;
+      right: 4%;
+      top: 0;
+    }
+
+    .yt .controller .progressbar {
+      position: absolute;
+      top: 95%;
+      left: 10%;
+      width: 80%;
+      height: .7%;
+      min-height: 6.5px;
+      border-radius: 5px;
+      background: rgba(89, 98, 117, .2);
+      overflow: visible;
+    }
+
+    .yt .controller .progressbar .loaded {
       position: absolute;
       top: 0;
       left: 0;
       z-index: 2;
-
-      width: 100%;
       height: 100%;
+      max-width: 100%;
+      width: 0%;
+      border-radius: 5px;
+      background: rgba(89, 98, 117, .2);
     }
 
-    .tv {
+    .yt .controller .progressbar .progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 3;
+      height: 100%;
+      width: 0%;
+      max-width: 100%;
+      border-radius: 5px;
+      transition: width .1s ease-in-out;
+      background: linear-gradient(270deg, #778beb, #63cdda, #f8a5c2, #e66767);
+      background-size: 400% 400%;
+      -webkit-animation: gradinet-progess 30s ease infinite;
+      -moz-animation: gradinet-progess 30s ease infinite;
+      animation: gradinet-progess 30s ease infinite;
+    }
+
+    .yt .controller .progressbar .dot {
+      position: absolute;
+      z-index: 4;
+      border-radius: 100%;
+      left: calc((100vh * 0.007 * -2) /4);
+      top: calc((100vh * 0.007 * -2) /4);
+      height: calc((100vh * 0.007) * 2);
+      width: calc((100vh * 0.007) * 2);
+      min-width: 13px;
+      min-height: 13px;
+      background: white;
+      transition: all .1s ease-in-out;
+      cursor: pointer;
+    }
+
+    /* .yt .controller .progressbar .dot:hover {
+      left: calc((100vh * 0.007 * -2) /2);
+      top: calc((100vh * 0.007 * -2) /2);
+      height: calc((100vh * 0.007) * 3);
+      width: calc((100vh * 0.007) * 3);
+    } */
+
+    .yt .tv {
       position: absolute;
       top: 0;
       left: 0;
       z-index: 1;
-
       width: 100%;
       height: 100%;
-
       overflow: hidden;
     }
-    #youtube-player {
-      opacity: 0;
-      transition: opacity .5s;
-    }
-    #youtube-player.active {
-      opacity: 1;
-    }
 
-    .html5-video-player .ytp-watermark {
-      display: none !important;
-    }
-
-    .current {
+    .yt .tv .video {
+      position: absolute;
       top: 0;
-      transition: all .2s ease-in-out;
+      left: 0;
+      z-index: 1;
+      margin: auto;
+      height: 100%;
+      width: 100%;
+      transition: opacity 0.5s;
+    }
+
+    .yt .tv. .audio {
+      display: none;
+    }
+
+    .yt .tv #videoplayer_html5_api {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: auto;
+      z-index: 1.2;
+      height: 100%;
+      width: 100%;
+    }
+
+    @-webkit-keyframes gradinet-progess {
+      0% {
+        background-position: 0% 50%
+      }
+      50% {
+        background-position: 100% 50%
+      }
+      100% {
+        background-position: 0% 50%
+      }
+    }
+
+    @-moz-keyframes gradinet-progess {
+      0% {
+        background-position: 0% 50%
+      }
+      50% {
+        background-position: 100% 50%
+      }
+      100% {
+        background-position: 0% 50%
+      }
+    }
+
+    @keyframes gradinet-progess {
+      0% {
+        background-position: 0% 50%
+      }
+      50% {
+        background-position: 100% 50%
+      }
+      100% {
+        background-position: 0% 50%
+      }
     }
   </style>
 </head>
 
-<body>
-  <div class="screen mainScreen">
-    <h3>waiting for content</h3>
-  </div>
-  <div class="screen ytScreen current" id='yt'>
-    <div class="cover">
-      asd
+<body class="wrapper">
+  wrapper
+  <div class="screen yt active">
+    <div class="player" id="playerDiv">
+      <!-- <div class="controller">
+        <div class="buttons">
+          <div id="timer" class="timer">00:00:00</div>
+          <div id="quality" class="quality">
+            480p
+          </div>
+          <div class="box" id="qualityBox">
+            <span>waiting</span>
+          </div>
+          <div id="mute" class="mute">mute</div>
+        </div>
+        <div class="progressbar">
+          <div id="progressDot" class="dot"></div>
+          <div id="buffor" class="loaded"></div>
+          <div id="progress" class="progress"></div>
+        </div>
+      </div>
+      <div class="tv">
+        <video id="videoplayer" class="video" autoplay>
+          <source src="film.mp4" type="video/mp4">
+        </video>
+        <audio id="audioplayer" class="audio" autoplay></audio>
+      </div> -->
     </div>
-    <div class="tv" id="youtube-player">
-
-    </div>
   </div>
-  <div class="screen twScreen">
-    tw
+  <div class="screen tw">
+    twitch
   </div>
-  <h1>Hello World!</h1>
-  <div id="message"></div>
 </body>
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="./player.js"></script>
 <script>
-  var tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/player_api';
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-  var player, playerInfo = {
-    autoplay: 0,
-    autohide: 1,
-    modestbranding: 1,
-    rel: 0,
-    showinfo: 0,
-    controls: 0,
-    disablekb: 1,
-    enablejsapi: 0,
-    iv_load_policy: 3,
-    color: 'red'
-  };
-
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('youtube-player', {
-      playerVars: playerInfo,
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange
-      }
-    });
-  }
-
-  function rescalePlayer() {
-
-  }
-  var tempVid = {
-    'videoId': '2b5QNj-BVhs',
-    'startSeconds': 515,
-    'endSeconds': 690,
-    'suggestedQuality': 'small'
-  };
-  // 4. The API will call this function when the video player is ready.
-  function onPlayerReady() {
-    player.loadVideoById(tempVid);
-    player.mute();
-  }
-
-  // 5. The API calls this function when the player's state changes.
-  //    The function indicates that when playing a video (state=1),
-  //    the player should play for six seconds and then stop.
-  var done = false, currVid = 0;
-
-  function onPlayerStateChange(e) {
-    if (e.data === 1) {
-      $('#youtube-player').addClass('active');
-      $('.hi em:nth-of-type(2)').html(currVid + 1);
-    } else if (e.data === 2) {
-      $('#youtube-player').removeClass('active');
-      // if (currVid === vid.length - 1) {
-      //   currVid = 0;
-      // } else {
-      //   currVid++;
-      // }
-      tv.loadVideoById(tempVid);
-      tv.seekTo(tempVid.startSeconds);
-    }
-  }
-
-  function stopVideo() {
-    player.stopVideo();
-  }
+  const {
+    ipcRenderer
+  } = require('electron')
+  var player = new Inply('playerDiv');
+  ipcRenderer.on('onevid', (event, data) => {
+    player.qualitySrc(data);
+  })
+  player.play();
 </script>
-
 </html>

@@ -7,73 +7,58 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 const net = require('net')
-
+const ytinfo = require('ytdl-core')
+const {
+  StringDecoder
+} = require('string_decoder')
+const decoder = new StringDecoder('utf8')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 function createWindow() {
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600
   })
 
-  // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
     slashes: true
   }))
 
-  // Open the DevTools.
   mainWindow.webContents.openDevTools()
 
-  // Emitted when the window is closed.
   mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should deletethe corresponding element.
     mainWindow = null
   })
 
   net.createServer((socket) => {
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
-
-    // Add a 'data' event handler to this instance of socket
     socket.on('data', function(data) {
       var temp = JSON.parse(data.toString());
       console.log(temp);
-      // Write the data back to the socket, the client will receive it as data from the server
-      mainWindow.webContents.send('clientJoin', socket.remoteAddress);
-      socket.write(data);
-
+      checkInfo(temp.id, (data) => {
+        mainWindow.webContents.send('onevid', data);
+      });
+      //socket.write(data);
     });
 
-    // Add a 'close' event handler to this instance of socket
     socket.on('close', function(data) {
       console.log('CLOSED: ' + socket.remoteAddress + ' ' + socket.remotePort);
     });
   }).listen(1234);
 }
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
 
-// Quit when all windows are closed.
 app.on('window-all-closed', function() {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
 
 app.on('activate', function() {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
     createWindow()
   }
@@ -83,5 +68,32 @@ app.on('load', function(data) {
 
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+function checkInfo(id, callback) {
+  var quality = {
+    audio: [],
+    video: []
+  }
+  if (!id)
+    callback(null);
+
+  ytinfo.getInfo(id, (err, info) => {
+    if (err)
+      callback(null);
+    for (var obj of info.formats) {
+      if (obj.type.indexOf('audio/') >= 0) {
+        quality.audio.push({
+          src: decoder.write(Buffer.from(obj.url)),
+          type: obj.type,
+          bitrate: obj.audioBitrate
+        });
+      } else if ((obj.container === 'webm' || obj.container === 'mp4') && (obj.audioBitrate == null) || obj.audioBitrate == '') {
+        quality.video.push({
+          src: decoder.write(Buffer.from(obj.url)),
+          resolution: obj.resolution,
+          type: obj.type
+        });
+      }
+    }
+    callback(quality);
+  });
+}
