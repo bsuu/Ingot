@@ -1,341 +1,104 @@
+<!-- <div class="controller">
+  <div class="buttons">
+    <div id="timer" class="timer">00:00:00</div>
+    <div id="quality" class="quality">
+      480p
+    </div>
+    <div class="box" id="qualityBox">
+      <span>waiting</span>
+    </div>
+    <div id="mute" class="mute">mute</div>
+  </div>
+  <div class="progressbar">
+    <div id="progressDot" class="dot"></div>
+    <div id="buffor" class="loaded"></div>
+    <div id="progress" class="progress"></div>
+  </div>
+</div>
+<div class="tv">
+  <video id="videoplayer" class="video" autoplay>
+    <source src="film.mp4" type="video/mp4">
+  </video>
+  <audio id="audioplayer" class="audio" autoplay></audio>
+</div> -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
-<head>
-  <meta charset="utf-8">
-  <title></title>
-  <style media="screen">
-    @import url('https://fonts.googleapis.com/css?family=Open+Sans|Varela+Round');
-    .wrapper {
-      padding: 0;
-      margin: 0;
-      overflow: hidden;
-    }
-
-    .screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      background: red;
-      transition: top .3s ease-in-out;
-    }
-
-    .screen.active {
-      top: 0 !important;
-    }
-
-    .screen.yt {
-      background: black;
-      top: -100%;
-    }
-
-    .screen.tw {
-      background: purple;
-      top: 200%;
-    }
-
-    .yt .controller {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      z-index: 2;
-    }
-
-    .yt .controller .buttons {
-      position: absolute;
-      top: 91.5%;
-      left: 10%;
-      width: 80%;
-      height: 1%;
-      color: white;
-      font-size: 16px;
-      font-family: 'Varela Round', sans-serif;
-      font-weight: 100;
-    }
-
-    .yt .controller .buttons .timer {
-      position: absolute;
-      left: 0.1%;
-      top: 0;
-    }
-
-    .yt .controller .buttons .quality {
-      position: absolute;
-      right: 0.1%;
-      top: 0;
-      cursor: pointer;
-    }
-
-    .yt .controller .buttons .box {
-      display: none;
-      position: absolute;
-      top: -120px;
-      right: 0;
-      /* right: 0.1%; */
-      height: auto;
-      min-width: 20px;
-      border-radius: 5px;
-      box-sizing: border-box;
-      max-width: 80px;
-      padding: 5px 15px;
-      background: rgba(89, 98, 117, .2);
-    }
-
-    .yt .controller .buttons .box span {
-      display: block;
-      cursor: pointer;
-    }
-
-    .yt .controller .buttons .box span:hover {
-    }
-
-    .yt .controller .buttons .mute {
-      position: absolute;
-      right: 4%;
-      top: 0;
-    }
-
-    .yt .controller .progressbar {
-      position: absolute;
-      top: 95%;
-      left: 10%;
-      width: 80%;
-      height: .7%;
-      min-height: 6.5px;
-      border-radius: 5px;
-      background: rgba(89, 98, 117, .2);
-      overflow: visible;
-    }
-
-    .yt .controller .progressbar .loaded {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 2;
-      height: 100%;
-      max-width: 100%;
-      width: 0%;
-      border-radius: 5px;
-      background: rgba(89, 98, 117, .2);
-    }
-
-    .yt .controller .progressbar .progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 3;
-      height: 100%;
-      width: 0%;
-      max-width: 100%;
-      border-radius: 5px;
-      transition: width .1s ease-in-out;
-      background: linear-gradient(270deg, #778beb, #63cdda, #f8a5c2, #e66767);
-      background-size: 400% 400%;
-      -webkit-animation: gradinet-progess 30s ease infinite;
-      -moz-animation: gradinet-progess 30s ease infinite;
-      animation: gradinet-progess 30s ease infinite;
-    }
-
-    .yt .controller .progressbar .dot {
-      position: absolute;
-      z-index: 4;
-      border-radius: 100%;
-      left: calc((100vh * 0.007 * -2) /4);
-      top: calc((100vh * 0.007 * -2) /4);
-      height: calc((100vh * 0.007) * 2);
-      width: calc((100vh * 0.007) * 2);
-      min-width: 13px;
-      min-height: 13px;
-      background: white;
-      transition: all .1s ease-in-out;
-      cursor: pointer;
-    }
-
-    /* .yt .controller .progressbar .dot:hover {
-      left: calc((100vh * 0.007 * -2) /2);
-      top: calc((100vh * 0.007 * -2) /2);
-      height: calc((100vh * 0.007) * 3);
-      width: calc((100vh * 0.007) * 3);
-    } */
-
-    .yt .tv {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .yt .tv .video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      margin: auto;
-      height: 100%;
-      width: 100%;
-      transition: opacity 0.5s;
-    }
-
-    .yt .tv #videoplayer_html5_api {
-      height: 100%;
-      width: 100%;
-    }
-
-    @-webkit-keyframes gradinet-progess {
-      0% {
-        background-position: 0% 50%
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+      body {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
       }
-      50% {
-        background-position: 100% 50%
+      .crown {
+        width: 50px;
+        height: 15px;
+        background: #f5cd79;
+        position: relative;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
       }
-      100% {
-        background-position: 0% 50%
+      .crown:before {
+        content: "";
+        position: absolute;
+      	top: -7.5px;
+      	left: 0;
+        height: 15px;
+        width: 20px;
+        background: #f5cd79;
+        border-top-left-radius: 30%;
+        overflow: hidden;
+        transform: skewY(35deg);
       }
-    }
-
-    @-moz-keyframes gradinet-progess {
-      0% {
-        background-position: 0% 50%
+      .crown:after {
+        content: "";
+        position: absolute;
+      	top: -7.5px;
+      	right: 0;
+        height: 15px;
+        width: 20px;
+        background: #f5cd79;
+        border-top-right-radius: 30%;
+        overflow: hidden;
+        transform: skewY(-35deg);
       }
-      50% {
-        background-position: 100% 50%
+      .crown span {
+        content: "";
+        position: absolute;
+        top: -15px;
+        left: 15px;
+        height: 20px;
+        width: 20px;
+        background: #f5cd79;
+        border-top-left-radius: 30%;
+        transform: rotate(45deg);
       }
-      100% {
-        background-position: 0% 50%
+      .crown span:after {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        height: 10px;
+        width: 10px;
+        background: #c44569;
+        border-radius: 30%;
+        transform: rotate(0deg);
       }
-    }
-
-    @keyframes gradinet-progess {
-      0% {
-        background-position: 0% 50%
-      }
-      50% {
-        background-position: 100% 50%
-      }
-      100% {
-        background-position: 0% 50%
-      }
-    }
-  </style>
-</head>
-
-<body class="wrapper">
-  wrapper
-  <div class="screen yt active">
-    <div class="player">
-      <div class="controller">
-        <div class="buttons">
-          <div id="timer" class="timer">01:03:34</div>
-          <div id="quality" class="quality">
-            480p
-          </div>
-          <div class="box" id="qualityBox">
-            <span>4k</span>
-            <span>1080p</span>
-            <span>720p</span>
-            <span>480p</span>
-            <span>360p</span>
-          </div>
-          <div id="mute" class="mute">mute</div>
-        </div>
-        <div class="progressbar">
-          <div id="progressDot" class="dot"></div>
-          <div id="buffor" class="loaded"></div>
-          <div id="progress" class="progress"></div>
-        </div>
-      </div>
-      <div class="tv">
-        <video id="videoplayer" class="video" autoplay muted>
-          <!--<source src="film.mp4" type="video/mp4">-->
-        </video>
-      </div>
+    </style>
+  </head>
+  <body>
+    <div class="crown">
+      <span></span>
     </div>
-  </div>
-  <div class="screen tw">
-    twitch
-  </div>
-</body>
-<script src="https://vjs.zencdn.net/6.6.3/video.js"></script>
-<script>
-  (function() {
-    var timer = document.getElementById('timer'),
-        quality = document.getElementById('quality'),
-        mute = document.getElementById('mute'),
-        dot = document.getElementById('progressDot'),
-        buffor = document.getElementById('buffor'),
-        progress = document.getElementById('progress'),
-        qualityBox = document.getElementById('qualityBox');
 
-    init();
-
-    var mpd = 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4';
-    var player = videojs(document.getElementById('videoplayer'));
-
-    player.src(mpd);
-    player.on('timeupdate', function (event) {
-      bufferUpdate();
-      progressUpdate();
-    });
-
-    function init() {
-      mute.addEventListener('click', changeMute)
-      quality.addEventListener('click', function () {
-        console.log(qualityBox.style.display);
-        qualityBox.style.display = (qualityBox.style.display === 'none' || qualityBox.style.display == '') ? 'block' : 'none';
-      })
-    }
-
-    function bufferUpdate() {
-      var bar = player.bufferedPercent() * 100;
-      console.log(player.bufferedPercent());
-      buffor.style.width = bar + '%';
-    }
-
-    function progressUpdate() {
-      var duration = player.duration();
-      var current = player.currentTime();
-      var bar = (current * 100) / duration;
-      progress.style.width = bar + '%';
-      dot.style.left = bar-.5 + '%';
-      timer.innerHTML = formatSeconds(current);
-    }
-
-    function changeMute() {
-        if(player.muted()) {
-          console.log('muted');
-          player.muted(false);
-        } else {
-          player.muted(true);
-        }
-    }
-
-    // player.initialize(, mpd, true);
-    //
-    // mutePlayer();
-    //
-    // function mutePlayer() {
-    //   player.setMute(!player.isMuted());
-    // }
-
-    function formatSeconds( sec ) {
-      var sec_num = parseInt(sec, 10); // don't forget the second param
-      var hours   = Math.floor(sec_num / 3600);
-      var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-      var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-      if (hours   < 10) {hours   = "0"+hours;}
-      if (minutes < 10) {minutes = "0"+minutes;}
-      if (seconds < 10) {seconds = "0"+seconds;}
-      return hours+':'+minutes+':'+seconds;
-    }
-  })();
-</script>
-
+  </body>
 </html>
