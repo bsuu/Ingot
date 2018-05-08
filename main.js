@@ -18,8 +18,10 @@ let mainWindow
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600
+    width: 1920,
+    height: 1080,
+    fullscreen: true,
+    frame: false
   })
 
   mainWindow.loadURL(url.format({
@@ -28,8 +30,6 @@ function createWindow() {
     slashes: true
   }))
 
-  mainWindow.webContents.openDevTools()
-
   mainWindow.on('closed', function() {
     mainWindow = null
   })
@@ -37,12 +37,14 @@ function createWindow() {
   net.createServer((socket) => {
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
     socket.on('data', function(data) {
-      var temp = JSON.parse(data.toString());
+      var string = data.toString('utf8');
+      console.log(string);
+      var temp = JSON.parse(string);
       console.log(temp);
       checkInfo(temp.id, (data) => {
         mainWindow.webContents.send('onevid', data);
       });
-      //socket.write(data);
+
     });
 
     socket.on('close', function(data) {

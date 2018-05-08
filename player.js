@@ -111,6 +111,16 @@ Inply.prototype = {
     data = null;
     state.quality = temp;
     qualityUpdate(state.quality);
+  },
+  mute: function() {
+    if (!playerElements)
+      return;
+    if (state.audio) {
+      playerElements.audio.muted = !playerElements.audio.muted;
+    } else {
+      playerElements.video.muted = !playerElements.video.muted;
+    }
+
   }
 }
 

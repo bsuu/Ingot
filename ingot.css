@@ -284,7 +284,10 @@
 }
 
 .users {
-  padding: 30px;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -293,9 +296,10 @@
 .user {
   height: 70px;
   width: 80px;
+  margin: 0 30px;
   border-top-left-radius: 50%;
   border-top-right-radius: 50%;
-  background: #f8a5c2;
+  background: #63cdda;
   position: relative;
 }
 .user::after {
@@ -303,7 +307,7 @@
   position: absolute;
   bottom: -10%;
   left: 0;
-  background: #f8a5c2;
+  background: auto;
   height: 20%;
   border-radius: 50%;
   width: 100%;
